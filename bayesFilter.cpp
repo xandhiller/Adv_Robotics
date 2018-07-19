@@ -35,15 +35,31 @@ int arraysize(T(&)[size]){return size;}
 
 //Prints an Array
 template<typename A> void printarray (A arg[],int arraylength) {
-	for ( int n = 0; n < arraylength; n ++)
-		cout << arg[n] << ", ";
+
+  for (int n = 0; n < arraylength; n ++)
+		if (n < (arraylength-1)) {
+      cout << "Array index: " << n << " \t";
+      cout << arg[n] << ", " << "\n";
+    }
+    else {
+      cout << "Array index: " << n << " \t";
+      cout << arg[n] << "\n";
+    }
 	cout << "\n";
 }
 
 //Prints an Vector Array
 template<typename A> void printvector(vector<A> arg) {
-	for (int n = 0; n < arg.size(); n ++)
-		cout << arg[n] << ", ";
+
+  for (int n = 0; n < arg.size(); n ++)
+		if (n < (arg.size()-1)) {
+      cout << "Vector index: " << n << " \t";
+      cout << arg[n] << ", " << "\n";
+    }
+    else {
+      cout << "Vector index: " << n << " \t";
+      cout << arg[n] << "\n";
+    }
 	cout << "\n";
 }
 
@@ -55,10 +71,6 @@ template<typename A> double vectorsum(vector<A> arg) {
   return sum;
 }
 //---------------------------------------------------//
-
-
-
-
 
 
 /* Calculate motion probability
@@ -96,7 +108,6 @@ double motionProb( int prePosition, int curPosition, bool control ) {
 	return prob;
 }
 
-
 /* Calculate observation probability */
 double obsProb( bool obser, int position ) {
 	double prob = 0;
@@ -122,7 +133,7 @@ double obsProb( bool obser, int position ) {
       prob = 0.2;
     }
   }
-  
+
   // NOT AT A DOOR (isDoor == false)
   else {
     // There's not a door and we observed one
@@ -162,10 +173,6 @@ vector<double> bayesFilter( vector<double> preBelief, bool control, bool observa
 }
 
 
-
-
-
-
 /*--------------------------MAIN FUNCTION---------------------------*/
 int main(int argc, char *argv[]) {
 	vector<double> initBelief;
@@ -174,15 +181,16 @@ int main(int argc, char *argv[]) {
 	// initialize the prior belief
 	/* QUESTION 1 & 2 HERE */
 
+  for (int i=0; i < num; i++) {
+    // Prior belief is that all have equal chance.
+    initBelief[i] = (float)1/(float)num;
+  }
 
 
 	cout << "************  Q1 & Q2 **************************\n";
 	cout << "The initialized probabilities are:\n";
 	printvector( initBelief );
 	cout << endl;
-
-
-
 
 
 	/* Q3
