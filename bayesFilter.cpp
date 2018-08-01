@@ -3,6 +3,7 @@
 #include <string.h>
 #include "math.h"
 
+#define NB_CELLS 20
 
 using namespace std;
 
@@ -23,8 +24,6 @@ double motionStayProb[] = { 1.0, 0.0 };
  * 		0.1 ---> observe a door given there is no door*/
 double obsDoorProb[] = { 0.8, 0.2 };
 double obsNotDoorProb[] = { 0.9, 0.1 };
-
-
 
 
 
@@ -51,8 +50,8 @@ template<typename A> void printarray (A arg[],int arraylength) {
 //Prints an Vector Array
 template<typename A> void printvector(vector<A> arg) {
 
-  for (int n = 0; n < arg.size(); n ++)
-		if (n < (arg.size()-1)) {
+  for (int n = 0; n < (int)arg.size(); n ++)
+		if (n < ((int)arg.size()-1)) {
       cout << "Vector index: " << n << " \t";
       cout << arg[n] << ", " << "\n";
     }
@@ -72,12 +71,28 @@ template<typename A> double vectorsum(vector<A> arg) {
 }
 //---------------------------------------------------//
 
+//----------SELF AUTHORED USEFUL FUNCITONS-----------//
+int findMax(vector<double> arg) {
+
+  int maxIndex = 0;
+
+  for (int i = 0; i < (int)arg.size(); i++) {
+    if ((int)arg[i] > (int)maxIndex) {
+      maxIndex = i;
+    }
+  }
+
+  return maxIndex;
+}
+//---------------------------------------------------//
+
+
 
 /* Calculate motion probability
  * 		prePosiiton ---> the previous robot position
  * 		curPosition ---> the current robot position
  * 		control     ---> input control method: staying or moving */
-double motionProb( int prePosition, int curPosition, bool control ) {
+double motionProb(int prePosition, int curPosition, bool control ) {
 	double prob = 0;
 
   /* QUESTION 3 HERE */
@@ -94,11 +109,18 @@ double motionProb( int prePosition, int curPosition, bool control ) {
   }
   // CONTROL == TRUE
   else {
-    if (curPosition == prePosition + 1) {
-      prob = 0.7;
+    if (
+      (curPosition == prePosition + 1)  ||
+      (curPosition == 1 && prePosition == 21))
+      {
+        prob = 0.7;
     }
-    else if (curPosition == prePosition + 2) {
-      prob = 0.3;
+    else if (
+      (curPosition == prePosition + 2)        ||
+      (curPosition == 1 && prePosition == 20) ||
+      (curPosition == 2 && prePosition == 21))
+      {
+        prob = 0.3;
     }
     else {
       prob = 0;
@@ -152,21 +174,54 @@ double obsProb( bool obser, int position ) {
 /* Update our belief */
 vector<double> bayesFilter( vector<double> preBelief, bool control, bool observation ) {
 	vector<double> curBelief;
+
 	curBelief.resize( preBelief.size() );
+
 	/* QUESTION 5 HERE */
 	/* Hint: First implement the prediction step (Equation (1) in the notes) */
 	/* 	 Then implement the update step (Equation (2) in the notes) */
 
+   // Get prev-state
+   // Prev cell is the index of the max value of prebelief, but the cell number
+   //   is one more than the index number.
+   // int prevCell = findMax(preBelief)+1;
 
+   // // Debugging code
+   // // cout << "Previous state is: " << prevCell << "\n";
+   //
+   // // Get current belief
+   //
+   //  vector<double> predictionCurrentCell;
+   //  predictionCurrentCell.resize( preBelief.size() );
+   //
+   //  // Prediction
+   //  // P(X_t, u_t)
+   //  for (int k = 1; i <= (int)predictionCurrentCell.size(); i++) {
+   //    predictionCurrentCell[i] = motionProb(prevCell, i, control);
+   //  }
 
-  /* P( x_t-1 | x_t ) == P(prePosition | curPosition) */
+  /*
+  * QUESTION: How do we know what our previous state is? Can we simply use the highest probability
+  * from the last belief calculation?
+  */
+  double prePosition = preBelief[(findMax(preBelief))]; // TODO: MAX of preBelief?
 
-  /* P( x_t | u_t ) == P( curPosition | control) */
+  // Predict
+  for (int i = 0; i < NB_CELLS; i++) {
+    curBelief[i] = preBelief[i]*motionProb(prePosition, i+1, control);
+  }
 
-  /* P( x_t-1 ) == P( prePosition ) == normaliser
-    == P(X = x_i) * P( X_t-1 == prePosition | X = x_i) */
+  // Normaliser
+  double normaliser = 0;
+  for (int i = 0; i < NB_CELLS; i++) { // TODO
+    normaliser += obsProb(observation, i+1)*motionProb(prePosition, i+1, control);
+  }
+  // normaliser = 0.005;
 
-
+  // Update
+  for (int i = 0; i < NB_CELLS; i++) {
+    curBelief[i] = (1.0/normaliser)*obsProb(observation, prePosition)*curBelief[i];
+  }
 
 	return curBelief;
 
@@ -176,14 +231,13 @@ vector<double> bayesFilter( vector<double> preBelief, bool control, bool observa
 /*--------------------------MAIN FUNCTION---------------------------*/
 int main(int argc, char *argv[]) {
 	vector<double> initBelief;
-	int num = 20;
-	initBelief.resize( num );
+	initBelief.resize(NB_CELLS);
 	// initialize the prior belief
 	/* QUESTION 1 & 2 HERE */
 
-  for (int i=0; i < num; i++) {
+  for (int i=0; i < NB_CELLS; i++) {
     // Prior belief is that all have equal chance.
-    initBelief[i] = (float)1/(float)num;
+    initBelief[i] = (float)1/(float)NB_CELLS;
   }
 
 
@@ -200,9 +254,10 @@ int main(int argc, char *argv[]) {
 	 * 		motionStayProb */
 
 	/* Testing your motionProb(...) function */
-	int prePosition = 3, curPosition = 5;
+	int prePosition = 3;
+  int curPosition = 5;
 	bool control = true;
-	double mProb = motionProb( prePosition, curPosition, control );
+	double mProb = motionProb( prePosition, curPosition, control);
 	cout << "************  Q3 **************************\n";
 	cout << "The motion probability is " << mProb << "\n";
 	cout << endl;
@@ -231,6 +286,8 @@ int main(int argc, char *argv[]) {
 	/* Q5
 	 * Testing your bayesFilter(...) function */
 	vector<double> curBelief;
+  control = true;
+  observation = true;
 	curBelief = bayesFilter( initBelief, control, observation );
 	cout << "************  Q5 **************************\n";
 	cout << "Updated probabilities: \n";
@@ -244,6 +301,10 @@ int main(int argc, char *argv[]) {
 	/* Just call the bayesFilter(...) function 4 times according to the given
 	   sequence of control inputs and observations */
 	/* HINT: Look at Q5 Testing code */
+
+  /* Repeat the following function after adjusting values:
+  curBelief = bayesFilter( curBelief, control, observation ); */
+
 
 	return(0);
 }
