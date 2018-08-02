@@ -204,17 +204,17 @@ vector<double> bayesFilter( vector<double> preBelief, bool control, bool observa
   * QUESTION: How do we know what our previous state is? Can we simply use the highest probability
   * from the last belief calculation?
   */
-  double prePosition = preBelief[(findMax(preBelief))]; // TODO: MAX of preBelief?
+  // double prePosition = preBelief[(findMax(preBelief))]; // TODO: MAX of preBelief?
 
   // Predict
   for (int j = 0; j < NB_CELLS; j++){
     for (int i = 0; i < NB_CELLS; i++) {
-      curBelief[j] += preBelief[i]*motionProb(prePosition, i+1, control);
+      curBelief[j] += preBelief[i]*motionProb(i+1, j+1, control);
     }
   }
   // Normaliser
   double normaliser = 0;
-  for (int i = 0; i < NB_CELLS; i++) { // TODO
+  for (int i = 0; i < NB_CELLS; i++) {
     normaliser += obsProb(observation, i+1)*curBelief[i];
   }
   // normaliser = 0.005;
@@ -286,12 +286,25 @@ int main(int argc, char *argv[]) {
 	cout << "Updated probabilities: \n";
 	printvector( curBelief );
 	cout << endl;
+  cout << "Sum of curBelief is: " << vectorsum(curBelief) << endl;
 
 	/* Q6 HERE */
 	/* Just call the bayesFilter(...) function 4 times according to the given
 	   sequence of control inputs and observations */
 	/* HINT: Look at Q5 Testing code */
 
+  curBelief = bayesFilter(curBelief, 0, 1);
+  printvector(curBelief);
+  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+  curBelief = bayesFilter(curBelief, 1, 0);
+  printvector(curBelief);
+  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+  curBelief = bayesFilter(curBelief, 1, 1);
+  printvector(curBelief);
+  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+  curBelief = bayesFilter(curBelief, 1, 1);
+  printvector(curBelief);
+  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
   /* Repeat the following function after adjusting values:
   curBelief = bayesFilter( curBelief, control, observation ); */
 
