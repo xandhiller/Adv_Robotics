@@ -207,20 +207,21 @@ vector<double> bayesFilter( vector<double> preBelief, bool control, bool observa
   double prePosition = preBelief[(findMax(preBelief))]; // TODO: MAX of preBelief?
 
   // Predict
-  for (int i = 0; i < NB_CELLS; i++) {
-    curBelief[i] = preBelief[i]*motionProb(prePosition, i+1, control);
+  for (int j = 0; j < NB_CELLS; j++){
+    for (int i = 0; i < NB_CELLS; i++) {
+      curBelief[j] += preBelief[i]*motionProb(prePosition, i+1, control);
+    }
   }
-
   // Normaliser
   double normaliser = 0;
   for (int i = 0; i < NB_CELLS; i++) { // TODO
-    normaliser += obsProb(observation, i+1)*motionProb(prePosition, i+1, control);
+    normaliser += obsProb(observation, i+1)*curBelief[i];
   }
   // normaliser = 0.005;
 
   // Update
   for (int i = 0; i < NB_CELLS; i++) {
-    curBelief[i] = (1.0/normaliser)*obsProb(observation, prePosition)*curBelief[i];
+    curBelief[i] = curBelief[i]*obsProb(observation, i+1)/normaliser;
   }
 
 	return curBelief;
@@ -262,11 +263,6 @@ int main(int argc, char *argv[]) {
 	cout << "The motion probability is " << mProb << "\n";
 	cout << endl;
 
-
-
-
-
-
 	/* Q4
 	 * 		Calculate the probability given observation and
 	 * 		current position
@@ -280,22 +276,16 @@ int main(int argc, char *argv[]) {
 	cout << "The observation probability is " << oProb << "\n";
 	cout << endl;
 
-
-
-
 	/* Q5
 	 * Testing your bayesFilter(...) function */
 	vector<double> curBelief;
   control = true;
   observation = true;
-	curBelief = bayesFilter( initBelief, control, observation );
+	curBelief = bayesFilter(initBelief, control, observation);
 	cout << "************  Q5 **************************\n";
 	cout << "Updated probabilities: \n";
 	printvector( curBelief );
 	cout << endl;
-
-
-
 
 	/* Q6 HERE */
 	/* Just call the bayesFilter(...) function 4 times according to the given
@@ -304,7 +294,6 @@ int main(int argc, char *argv[]) {
 
   /* Repeat the following function after adjusting values:
   curBelief = bayesFilter( curBelief, control, observation ); */
-
 
 	return(0);
 }
