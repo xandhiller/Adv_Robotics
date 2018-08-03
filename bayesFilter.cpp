@@ -111,14 +111,14 @@ double motionProb(int prePosition, int curPosition, bool control ) {
   else {
     if (
       (curPosition == prePosition + 1)  ||
-      (curPosition == 1 && prePosition == 21))
+      (curPosition == 1 && prePosition == 20))
       {
         prob = 0.7;
     }
     else if (
       (curPosition == prePosition + 2)        ||
-      (curPosition == 1 && prePosition == 20) ||
-      (curPosition == 2 && prePosition == 21))
+      (curPosition == 1 && prePosition == 19) ||
+      (curPosition == 2 && prePosition == 20))
       {
         prob = 0.3;
     }
@@ -293,15 +293,22 @@ int main(int argc, char *argv[]) {
 	   sequence of control inputs and observations */
 	/* HINT: Look at Q5 Testing code */
 
-  curBelief = bayesFilter(curBelief, 0, 1);
+  cout << "Test 1, control = 0, obs = 1.\n";
+  curBelief = bayesFilter(initBelief, 0, 1);
   printvector(curBelief);
   cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+
+  cout << "Test 2, control = 1, obs = 0.\n";
   curBelief = bayesFilter(curBelief, 1, 0);
   printvector(curBelief);
   cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+
+  cout << "Test 3, control = 1, obs = 1.\n";
   curBelief = bayesFilter(curBelief, 1, 1);
   printvector(curBelief);
   cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+
+  cout << "Test 4, control = 1, obs = 1.\n";
   curBelief = bayesFilter(curBelief, 1, 1);
   printvector(curBelief);
   cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
