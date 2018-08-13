@@ -18,6 +18,7 @@
 
 #include "pf_localization.h"
 
+const double sigma_z = 0.5;
 const double map_width  = 6.44;
 const double map_height = 3.33;
 const double nbeams = 5;
@@ -92,7 +93,7 @@ void PFLocalization::process() {
             }
             else {
 
-                if ( (robot_odom_[0] != 0.0 || robot_odom_[1] != 0.0) ) {
+                if ((robot_odom_[0] != 0.0 || robot_odom_[1] != 0.0) ) {
                     ROS_INFO("Robot odom: distance = %f and orientation = %f", robot_odom_[0], robot_odom_[1]);
                     motion( robot_odom_[0], robot_odom_[1] );
 
@@ -101,9 +102,19 @@ void PFLocalization::process() {
 										//!		1. what is the likelihood
 										//!		2. how to update previous belief
 										//!		3. how to do normalization of updated belief
+                    
+                    // Normaliser 
+                    double normaliser = 0;
+                    for (int i = 0; i < particles_.size(); i++) {
+                        normaliser += particle_[i].weight;
+                    }
 
+                    // New weights
+                    for (int i = 0; i < particles_.size(); i++) {
+                        particle_[i].weight = sense(sigma_z, particle_[i].x, particle_[i].y particle_[i].o)*particle_[i].weight/normaliser;
+                    }
+                    
 
-                    // Test
 
 
 
@@ -154,7 +165,6 @@ void PFLocalization::process() {
 
 /** particle filter init */
 void PFLocalization::init_particles() {
-    Particle particles_[n_particles_];
     particles_.resize( n_particles_);
 		//! add particles initialistion code here
 		//! Notice:
@@ -166,17 +176,17 @@ void PFLocalization::init_particles() {
 
     // Assuming x is width
     for (i = 0; i < (int)particles_.size(); i++) {
-      particles_[i].x = PFLocalization::uniform_sampling(0, map_width);
+      particles_[i].x = PFLocalization::uniform_sampling(-map_width, map_width);
     }
 
     // Assuming y is height
     for (i = 0; i < (int)particles_.size(); i++) {
-      particles_[i].y = PFLocalization::uniform_sampling(0, map_height);
+      particles_[i].y = PFLocalization::uniform_sampling(-map_height, map_height);
     }
 
     // Uniform sampling for orientation
     for (i = 0; i < (int)particles_.size(); i++) {
-      particles_[i].o = PFLocalization::uniform_sampling(0, 2*PI);
+      particles_[i].o = PFLocalization::uniform_sampling(0, 2*M_PI);
     }
 
     // Initialise the weights, all equal. Sums to 1.
@@ -246,10 +256,20 @@ void PFLocalization::motion(double dist, double ori) {
 
     for ( int i = 0; i < (int)particles_.size(); ++ i ) {
         //! add noise to motion
-				//! put your code here
-				//! Notice:
-				//! 	1. sampling distribution
-				//!  	2. range of updated orientation
+        double wd, wo; // Noise
+        wd = PFLocalization::gaussian_sampling(0.0, pow(dist_noise_, 2.0));
+        wo = PFLocalization::gaussian_sampling(0.0, fmod(pow(ori_noise_, 2.0), 2*M_PI));
+        
+        particles_[i].x += (dist + wd)*cos(particles_[i].o);
+        particles_[i].y += (dist + wd)*sin(particles_[i].o);
+
+        double new_angle = fmod(particles_[i].o + ori + wo, 2*M_PI); 
+        particles_[i].o = new_angle; 
+		
+		//! put your code here
+		//! Notice:
+		//! 	1. sampling distribution
+		//!  	2. range of updated orientation
     }
 }
 
