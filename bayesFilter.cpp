@@ -178,51 +178,24 @@ vector<double> bayesFilter( vector<double> preBelief, bool control, bool observa
 	curBelief.resize( preBelief.size() );
 
 	/* QUESTION 5 HERE */
-	/* Hint: First implement the prediction step (Equation (1) in the notes) */
-	/* 	 Then implement the update step (Equation (2) in the notes) */
-
-   // Get prev-state
-   // Prev cell is the index of the max value of prebelief, but the cell number
-   //   is one more than the index number.
-   // int prevCell = findMax(preBelief)+1;
-
-   // // Debugging code
-   // // cout << "Previous state is: " << prevCell << "\n";
-   //
-   // // Get current belief
-   //
-   //  vector<double> predictionCurrentCell;
-   //  predictionCurrentCell.resize( preBelief.size() );
-   //
-   //  // Prediction
-   //  // P(X_t, u_t)
-   //  for (int k = 1; i <= (int)predictionCurrentCell.size(); i++) {
-   //    predictionCurrentCell[i] = motionProb(prevCell, i, control);
-   //  }
-
-  /*
-  * QUESTION: How do we know what our previous state is? Can we simply use the highest probability
-  * from the last belief calculation?
-  */
-  // double prePosition = preBelief[(findMax(preBelief))]; // TODO: MAX of preBelief?
-
-  // Predict
-  for (int j = 0; j < NB_CELLS; j++){
+	
+    // Predict
+    for (int j = 0; j < NB_CELLS; j++){
     for (int i = 0; i < NB_CELLS; i++) {
       curBelief[j] += preBelief[i]*motionProb(i+1, j+1, control);
     }
-  }
-  // Normaliser
-  double normaliser = 0;
-  for (int i = 0; i < NB_CELLS; i++) {
+    }
+    // Normaliser
+    double normaliser = 0;
+    for (int i = 0; i < NB_CELLS; i++) {
     normaliser += obsProb(observation, i+1)*curBelief[i];
-  }
-  // normaliser = 0.005;
+    }
+    // normaliser = 0.005;
 
-  // Update
-  for (int i = 0; i < NB_CELLS; i++) {
+    // Update
+    for (int i = 0; i < NB_CELLS; i++) {
     curBelief[i] = curBelief[i]*obsProb(observation, i+1)/normaliser;
-  }
+    }
 
 	return curBelief;
 
@@ -256,7 +229,7 @@ int main(int argc, char *argv[]) {
 
 	/* Testing your motionProb(...) function */
 	int prePosition = 3;
-  int curPosition = 5;
+    int curPosition = 5;
 	bool control = true;
 	double mProb = motionProb( prePosition, curPosition, control);
 	cout << "************  Q3 **************************\n";
@@ -279,41 +252,81 @@ int main(int argc, char *argv[]) {
 	/* Q5
 	 * Testing your bayesFilter(...) function */
 	vector<double> curBelief;
-  control = true;
-  observation = true;
+    control = true;
+    observation = true;
 	curBelief = bayesFilter(initBelief, control, observation);
 	cout << "************  Q5 **************************\n";
 	cout << "Updated probabilities: \n";
 	printvector( curBelief );
 	cout << endl;
-  cout << "Sum of curBelief is: " << vectorsum(curBelief) << endl;
+    cout << "Sum of curBelief is: " << vectorsum(curBelief) << endl;
 
 	/* Q6 HERE */
 	/* Just call the bayesFilter(...) function 4 times according to the given
 	   sequence of control inputs and observations */
 	/* HINT: Look at Q5 Testing code */
 
-  cout << "Test 1, control = 0, obs = 1.\n";
-  curBelief = bayesFilter(initBelief, 0, 1);
-  printvector(curBelief);
-  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+    cout << "Test 1, control = 0, obs = 1.\n";
+    curBelief = bayesFilter(initBelief, 0, 1);
+    printvector(curBelief);
+    cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
 
-  cout << "Test 2, control = 1, obs = 0.\n";
-  curBelief = bayesFilter(curBelief, 1, 0);
-  printvector(curBelief);
-  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+    cout << "Test 2, control = 1, obs = 0.\n";
+    curBelief = bayesFilter(curBelief, 1, 0);
+    printvector(curBelief);
+    cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
 
-  cout << "Test 3, control = 1, obs = 1.\n";
-  curBelief = bayesFilter(curBelief, 1, 1);
-  printvector(curBelief);
-  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+    cout << "Test 3, control = 1, obs = 1.\n";
+    curBelief = bayesFilter(curBelief, 1, 1);
+    printvector(curBelief);
+    cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
 
-  cout << "Test 4, control = 1, obs = 1.\n";
-  curBelief = bayesFilter(curBelief, 1, 1);
-  printvector(curBelief);
-  cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
-  /* Repeat the following function after adjusting values:
-  curBelief = bayesFilter( curBelief, control, observation ); */
+    cout << "Test 4, control = 1, obs = 1.\n";
+    curBelief = bayesFilter(curBelief, 1, 1);
+    printvector(curBelief);
+    cout << "The vector sum is: " << vectorsum(curBelief) << endl << endl;
+    /* Repeat the following function after adjusting values:
+    curBelief = bayesFilter( curBelief, control, observation ); */
+  
+  
+    /*  Question Seven: Explain your results in Q6 */
+      
+    /*   Test 1: Because control is zero, the motionProb() function contrains
+    *   means that the probability distribution doesn't change.
+    *
+    *   Test 2: Inidicates that the robot moved, but it doesn't sense the door,
+    *   so the probability distribution changes. However note the large peaks 
+    *   that were on position 3, 5 and 8 (index 2, 4 and 7) have now shifted
+    *   to position 4, 6 and 9 (index 3, 5 and 8). This makes sense, as we have
+    *   moved forward, and these probabilities should have shifted too.
+    *
+    *   Test 3: Now your two peaks have centred over two positions! This is 
+    *   because there has been movement and we've detected another door. This 
+    *   rules out the first door and hence we have highest probability over the
+    *   door at 8.
+    *
+    *   Test 4: Now we have moved forward one step and sensed another door, 
+    *   meaning we either jumped forward two steps or are mis-sensing the door.
+    *   Because of this, our probabilities are distributed over more positions. 
+    */
+  
+  
+    /*  Question Eight: Why do we need to observe the doors (or any other 
+    *   landmark)/ What would happen if we stopped using our sensor? 
+    */
+    
+    /*  If we stopped using landmarks, we would by travelling blind, a.k.a. 
+    *   using 'Dead Reckoning'. Because of the small errors in our ability to
+    *   track motion, this would result in an accumulative error and progressively
+    *   lead to less certainty of our position over time. This would be a less 
+    *   efficient method, as currently our statistical method approaches a more
+    *   certain result over time and we can theoretically start at any point on 
+    *   our 20 cell map. With 'Dead Reckoning' you would need to know where you 
+    *   start to localise your robot. 
+    */
+  
+  
+  
 
 	return(0);
 }
