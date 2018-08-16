@@ -106,18 +106,14 @@ void PFLocalization::process() {
                     // Normaliser 
                     double normaliser = 0;
                     for (int i = 0; i < particles_.size(); i++) {
-                        normaliser += particle_[i].weight;
+                        normaliser += particles_[i].weight;
                     }
 
                     // New weights
                     for (int i = 0; i < particles_.size(); i++) {
-                        particle_[i].weight = sense(sigma_z, particle_[i].x, particle_[i].y particle_[i].o)*particle_[i].weight/normaliser;
+                        particles_[i].weight = PFLocalization::sense(sigma_z, particles_[i].x, particles_[i].y, particles_[i].o)*particles_[i].weight/normaliser;
                     }
                     
-
-
-
-
 
                     calc_estimate();
 
@@ -234,8 +230,12 @@ double PFLocalization::sense(double sigma, double x, double y, double theta) {
 				//! compute the likelihood of each beam
 				//! put your code here
 
+        // Calculate variance
+        double var = pow(sigma, 2.0);
+        // Using formula for likelihood in the assignment sheet
+        double lkhood = (1/(sqrt(2*M_PI*var)))*exp(-(pow((scan_data_[i]-raydist),2))/(2*var));
 
-
+        error = error*lkhood;
 
     }
 		//! return the final error
@@ -286,7 +286,21 @@ void PFLocalization::calc_estimate() {
 		//! 	1. average, how?
 		//!		2. again, range of x, y, orientation
 
-
+    int highestWeightValue = 0;
+    int highestWeightindex = 0;
+  
+  
+    for ( int i = 0; i < (int)particles_.size(); ++ i ) {
+        if ( highestWeightValue < particles_[i].weight) {
+          int highestWeightValue = particles_[i].weight;
+          int highestWeightindex = i;
+        }
+    }
+  
+ 
+    esti_pos_[0] = particles_[highestWeightindex].x;
+    esti_pos_[1] = particles_[highestWeightindex].y;
+    esti_pos_[2] = particles_[highestWeightindex].o;
 
 
 
