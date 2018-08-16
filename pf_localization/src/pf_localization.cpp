@@ -9,7 +9,6 @@
 #include <geometry_msgs/PoseArray.h>
 #include <ros/package.h>
 
-
 #include <opencv2/opencv.hpp>
 
 #include <boost/random.hpp>
@@ -117,7 +116,7 @@ void PFLocalization::process() {
 
                     calc_estimate();
 
-                    if ( step_count_ == 5 ) {
+                    if ( step_count_ == 5 ) {                        
                         resampling();
                         step_count_ = 0;
                     }
@@ -232,6 +231,7 @@ double PFLocalization::sense(double sigma, double x, double y, double theta) {
 
         // Calculate variance
         double var = pow(sigma, 2.0);
+        
         // Using formula for likelihood in the assignment sheet
         double lkhood = (1/(sqrt(2*M_PI*var)))*exp(-(pow((scan_data_[i]-raydist),2))/(2*var));
 
@@ -286,10 +286,13 @@ void PFLocalization::calc_estimate() {
 		//! 	1. average, how?
 		//!		2. again, range of x, y, orientation
 
+
+
+    // Init variables.
     int highestWeightValue = 0;
     int highestWeightindex = 0;
   
-  
+    // Find the highest weighted particle. Use this to estimate position. 
     for ( int i = 0; i < (int)particles_.size(); ++ i ) {
         if ( highestWeightValue < particles_[i].weight) {
           int highestWeightValue = particles_[i].weight;
@@ -297,14 +300,10 @@ void PFLocalization::calc_estimate() {
         }
     }
   
- 
+    // Assign the highest weighted particle to the estimated position variable.
     esti_pos_[0] = particles_[highestWeightindex].x;
     esti_pos_[1] = particles_[highestWeightindex].y;
     esti_pos_[2] = particles_[highestWeightindex].o;
-
-
-
-
 
 		//! uncomment the following line if you want to see the estimated pose
 //    cout << "Estimated pose: " << esti_pos_[0] << ", " << esti_pos_[1] << ", " << esti_pos_[2] << endl;
@@ -315,10 +314,13 @@ void PFLocalization::resampling() {
     int ind = int(uniform_sampling(0., 1.)*double(particles_.size()));
     double beta = 0.0;
     double maxw = 0;
+    
     for ( int i = 0; i < (int)particles_.size(); ++ i )
         if ( particles_[i].weight > maxw )
             maxw = particles_[i].weight;
     vector<Particle> n_particles;
+    
+    
     for ( int i = 0; i < (int)particles_.size(); ++ i ) {
         beta += uniform_sampling(0., 1.0)*2.0*maxw;
         bool found = false;
