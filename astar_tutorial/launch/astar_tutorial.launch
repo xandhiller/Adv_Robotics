@@ -1,0 +1,32 @@
+<!-- -->
+<launch>
+  <!--<node name="astar_planner" cwd="node" pkg="astar_planner" type="astar" required="true" output="screen"> -->
+  <node pkg="astar_tutorial" type="astar_tutorial" name="astar_tutorial" required="true" output="screen">
+    <param name="map_file_name" type="str" value="color_map.png"/>
+    <param name="color_cost" type="str" value=""/>
+    <param name="map_width" type="double" value="10"/>
+    <param name="cell_size" type="double" value="0.05"/>
+    <param name="wall_clearance" type="double" value="0.15"/>
+    <param name="astar_lambda" type="double" value="1"/>
+    
+    <!-- false for Manhattan, true for Euclidean -->
+    <param name="euclidean_distance" type="bool" value="false"/>
+    <!-- false for N-S-E-W, true for N-S-E-W-NW-NE-SE-SW -->
+    <param name="diagonal_movement" type="bool" value="false"/>
+
+
+    <!-- start position and goal position -->
+    <param name="start_x" type="double" value="7"/>
+    <param name="start_y" type="double" value="1"/>
+    <param name="end_x" type="double" value="9"/>
+    <param name="end_y" type="double" value="1"/>
+    <param name="smooth_distance_weight" type="double" value="0.1"/>
+    <param name="smooth_data_weight" type="double" value="0.3"/>
+    <param name="smooth_tolerance" type="double" value="0.001"/>
+  </node>
+
+  <node pkg="map_server" type="map_server" name="map_server" required="true" args="$(find astar_tutorial)/data/map.yaml" />
+  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find astar_tutorial)/data/astar_conf.rviz" />
+</launch>
+
+

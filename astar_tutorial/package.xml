@@ -1,0 +1,15 @@
+<package format="2">
+    <name>astar_tutorial</name>
+    <version>0.0.1</version>
+    <description>The astar_tutorial package</description>
+    <maintainer email="le.gentil.cedric@gmail.com">Cedric Le Gentil</maintainer>
+    <license>BSD-3-Clause</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>roslib</depend>
+    <depend>std_msgs</depend>
+    <depend>libopencv-dev</depend>
+    <depend>nav_msgs</depend>
+</package>
