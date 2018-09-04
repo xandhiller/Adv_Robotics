@@ -112,8 +112,6 @@ int main(int argc, char** argv){
             ros::spinOnce();
         }
     }
-
-
     return 0;
 
 }
@@ -128,7 +126,7 @@ nav_msgs::Path PathToNavMsgPath(std::vector<astar_tutorial::RealCoordinates > pa
     ros::Time path_time = ros::Time::now();
     output.header.frame_id = map_id;
     output.header.stamp = path_time;
-    for(int i = 0; i < path.size(); ++i){
+    for(int i = 0; i < path.size(); ++i) {
         geometry_msgs::PoseStamped p;
         p.header.stamp = path_time;
         p.header.frame_id = map_id;
@@ -158,9 +156,44 @@ std::vector<astar_tutorial::RealCoordinates > SmoothPath(std::vector<astar_tutor
 
     ////////////////////// Your code here
     
+    double sum = 0;
+    double ix = 0;
+    double iy = 0;
+    double nx = 0;
+    double ny = 0; 
+    
+    while (sum < tolerance)
+    {
+    for (int i = 1; i < path.size() - 1; ++i) {
+		ix = smoothed_path[i].x;
+		
+		smoothed_path[i].x = smoothed_path[i].x \
+		    - (data_weight + 2 * smooth_weigth) * smoothed_path[i].x \ 
+		    + data_weight * path[i].x \
+		    + smooth_weigth * smoothed_path[i-1].x \
+		    + smooth_weigth * smoothed_path[i-1].x;
+		
+		nx = smoothed_path[i].x;
+		
+		iy = smoothed_path[i].y;
+		
+		smoothed_path[i].y = smoothed_path[i].y \
+		    - (data_weight + 2 * smooth_weigth) * smoothed_path[i].y \
+		    + data_weight * path[i].y \
+		    + smooth_weigth * smoothed_path[i-1].y \
+		    + smooth_weigth * smoothed_path[i+1].y;
+		
+		ny = smoothed_path[i].y;
+		
+		sum = sum + std::pow((nx - ix),2) + pow((ny - iy),2);
+	}
+    }
     
     
-    
+    //si current smoothed position
+    //pi original position
+    //si - 1 previous smoothed position
+    //si + 1 next smoothed position
     
     //////////////////////
 

@@ -25,7 +25,8 @@ namespace astar_tutorial{
          * id, parent_id cost and the heuristic */
         int Push (astar_tutorial::Node new_node);
 
-        /* Pull a node out of the open list, returns a Node with at least the following fields :
+        /* Pull a node out of the open list, returns a Node with at 
+         *  least the following fields :
          * id, parent_id cost and the heuristic */
         astar_tutorial::Node Pull (int id);
 
@@ -45,7 +46,6 @@ namespace astar_tutorial{
 
 
     private:
-
         // Stores the node list : the map key is the node id
         // the value is a Node with at least the following fields :
         // id, parent_id cost and the heuristic

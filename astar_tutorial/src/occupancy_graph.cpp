@@ -153,7 +153,7 @@ astar_tutorial::OccupancyGraph::~OccupancyGraph () { }
 
 
 /* Get adjacent nodes in the graph to the node id,
- * retruns a vector of pair, each pair represent an adjacent node : id, cost */
+ * returns a vector of pair, each pair represent an adjacent node : id, cost */
 std::vector<astar_tutorial::Node > astar_tutorial::OccupancyGraph::GetAdjacentNodes(int id){
 
     std::vector<astar_tutorial::Node > neighbour_list = std::vector<astar_tutorial::Node >();
@@ -189,7 +189,22 @@ std::vector<astar_tutorial::Node > astar_tutorial::OccupancyGraph::GetAdjacentNo
     // Else (the robot can also move diagonally)
     }else{
         //////////////////// Your code here
-        
+        const int kRowMvt[4] = {1, 1, -1, -1};
+        const int kColMvt[4] = {-1, -1, 1, 1};
+
+	// For each possible movement
+        for(int i = 0; i<4; ++i){
+            // If node exist in the surrounding place
+            if(grid_to_id_.count(std::pair<int, int>(row + kRowMvt[i], col + kColMvt[i])) != 0){
+                int neighbour_id = grid_to_id_[std::pair<int, int>(row + kRowMvt[i], col + kColMvt[i])];
+            
+                double edge_cost = std::max(terrain_cost, std::get<4>(node_list_[neighbour_id])) * 1.4142;
+                astar_tutorial::Node node_to_push;
+                node_to_push.id = neighbour_id;
+                node_to_push.mvt_cost = edge_cost;
+                neighbour_list.push_back(node_to_push); 
+			}
+		}
         
         
         

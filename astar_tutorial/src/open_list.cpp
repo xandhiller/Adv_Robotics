@@ -25,20 +25,24 @@ astar_tutorial::OpenList::~OpenList () { }
 astar_tutorial::Node astar_tutorial::OpenList::PullToExpand ()
 {
     astar_tutorial::Node return_node;
-    if(node_list_.empty()){
+    if(node_list_.empty()) {
         ROS_WARN(" The OpenList is empty, no node can be pulled for expansion");
         return return_node;
     }
 
 
-    
+    int smallestCombinedCost = 10000000;
+    int smallestLambdaIndex = 0;
     
     //////////////////// Your code here
-    
-    
-    
+    for(int i = 0; i < node_list_.size(); i++) {        
+        if(node_list_[i].cost + node_list_[i].heuristic < smallestCombinedCost) {
+            smallestLambdaIndex = i;
+        }
+    }    
+    return_node = node_list_[smallestLambdaIndex];
     ////////////////////
-   
+     
     return return_node;
 }
 
@@ -50,10 +54,11 @@ astar_tutorial::Node astar_tutorial::OpenList::PullToExpand ()
 /* Push a node in the open list, returns -1 if an issue occured */
 int astar_tutorial::OpenList::Push(astar_tutorial::Node node) 
 {
-    if(node_list_.count(node.id) == 0){ 
-        node_list_.insert(std::pair< int, astar_tutorial::Node >(node.id, node) );
+    /* If at the first node, */
+    if(node_list_.count(node.id) == 0) { 
+        node_list_.insert(std::pair< int, astar_tutorial::Node >(node.id, node));
         return 1;
-    }else{
+    } else {
         ROS_WARN("The node %d is already in the OpenList", node.id);
         return -1;
     }
@@ -103,9 +108,6 @@ bool astar_tutorial::OpenList::Empty ()
 {
     return node_list_.empty();
 }
-
-
-
 
 
 

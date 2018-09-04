@@ -17,15 +17,21 @@ astar_tutorial::ExtendedList::~ExtendedList () { }
 
 
 
-/* Get the path from the end_id node : retrun a vector of id (int) going from the starting node to the ending node */
+/* Get the path from the end_id node : return a vector of id (int) going from the starting node to the ending node */
 std::vector<int> astar_tutorial::ExtendedList::GetPath (int end_id)
 {
     std::vector<int> output = std::vector<int>();
 
     //////////////////// Your code here
     
-    
-    
+	int current_id = end_id;
+
+    while(!(node_list_[current_id].cost == 0)) {
+	    output.push_back(current_id);
+	    current_id = node_list_[current_id].parent_id;
+	}
+
+	std::reverse(output.begin(),output.end());
     ////////////////////
     
 

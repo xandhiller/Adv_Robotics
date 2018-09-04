@@ -22,10 +22,6 @@ astar_tutorial::AStar::~AStar () { }
 
 
 
-
-
-
-
 /* Compute the path between the start and end coordinates arguments with the A* path planning algorithm,
  * return a vector of RealCoordinates : x,y */
 std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
@@ -48,7 +44,7 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
     // Instantiate the OpenList and ExtendedList objects
     extended_list_ = astar_tutorial::ExtendedList();
     open_list_ = astar_tutorial::OpenList(lambda_);
-    
+
     // Push the starting node in the open list
     astar_tutorial::Node first_node;
     first_node.id = start_id_;
@@ -57,18 +53,10 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
     first_node.heuristic = ComputeHeuristic(start_id_);
     open_list_.Push(first_node);
 
-
-
-
     //////////////////// Your code here
+	astar_tutorial::OccupancyGraph::GetAdjacentNodes(first_node.id);
     
-    
-    
-    
-    
-    
-    
-    
+
     ////////////////////
 
     ROS_INFO("Number of node extended = %d", extended_list_.Size());
@@ -79,24 +67,23 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
 
 /* Conmpute the heuristic for a given node id */
 double astar_tutorial::AStar::ComputeHeuristic(int id){
-    
+
     astar_tutorial::GridCoordinates grid_pos = graph_.IDToGrid(id);
-   
-    double distance = 0; 
+
+    double distance = 0;
 
     if(!euclidean_distance_){
         //////////////////// Your code here (Manhattan distance).
-        
-        
+
+	distance = std::abs(grid_end_.col - grid_pos.col) + std::abs(grid_end_.row - grid_pos.row);
+
         ////////////////////
     }else{
         //////////////////// Your code here (Euclidean distance).
-        
-        
+
+	distance = std::sqrt(pow((grid_end_.col - grid_pos.col),2) + pow((grid_end_.row - grid_pos.row),2));
+
         ////////////////////
     }
     return distance;
 }
-
-
-
