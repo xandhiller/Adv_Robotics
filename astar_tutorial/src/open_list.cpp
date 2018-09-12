@@ -54,10 +54,11 @@ astar_tutorial::Node astar_tutorial::OpenList::PullToExpand ()
 /* Push a node in the open list, returns -1 if an issue occured */
 int astar_tutorial::OpenList::Push(astar_tutorial::Node node) 
 {
-    /* If at the first node, */
-    if(node_list_.count(node.id) == 0) { 
+    if(node_list_.count(node.id) == 0) { /* if the node ID is not in the open_list, add it in  */
         node_list_.insert(std::pair< int, astar_tutorial::Node >(node.id, node));
         return 1;
+
+    // Nb: The count() method returns how many time a key occurs in a map.`
     } else {
         ROS_WARN("The node %d is already in the OpenList", node.id);
         return -1;

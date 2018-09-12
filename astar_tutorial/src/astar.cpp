@@ -5,8 +5,6 @@
 #include <math.h>
 
 
-
-
 /* Constructor : occupancy_graph the graph/map, lambda the weight of the heuristic
  * and euclidean_distance a flag to use the euclidean or manhattan distance for the heuristic*/
 astar_tutorial::AStar::AStar (astar_tutorial::OccupancyGraph occupancy_graph, double lambda,
@@ -19,8 +17,6 @@ astar_tutorial::AStar::AStar (astar_tutorial::OccupancyGraph occupancy_graph, do
 }
 /* Destructor */
 astar_tutorial::AStar::~AStar () { }
-
-
 
 /* Compute the path between the start and end coordinates arguments with the A* path planning algorithm,
  * return a vector of RealCoordinates : x,y */
@@ -51,11 +47,27 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
     first_node.parent_id = start_id_;
     first_node.cost = 0;
     first_node.heuristic = ComputeHeuristic(start_id_);
-    open_list_.Push(first_node);
 
     //////////////////// Your code here
-	astar_tutorial::OccupancyGraph::GetAdjacentNodes(first_node.id);
     
+    // Iterator = First_node
+    
+    // Whilst iterator node does not equal goal
+
+      // Grab adjacent nodes from iterator -> Place into open_list 
+     
+      // Compute heuristics on all values in open_list
+      
+      // Push all nodes in open_list to extended_list
+      
+      // Pull to expand the extended_list, assign returned node -> iterator
+      
+
+
+    // If at goal: Extended_list -> GetPath
+	    
+      
+     
 
     ////////////////////
 
@@ -66,22 +78,22 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
 
 
 /* Conmpute the heuristic for a given node id */
-double astar_tutorial::AStar::ComputeHeuristic(int id){
+double astar_tutorial::AStar::ComputeHeuristic(int id) {
 
     astar_tutorial::GridCoordinates grid_pos = graph_.IDToGrid(id);
 
     double distance = 0;
 
-    if(!euclidean_distance_){
+    if(!euclidean_distance_) {
         //////////////////// Your code here (Manhattan distance).
 
-	distance = std::abs(grid_end_.col - grid_pos.col) + std::abs(grid_end_.row - grid_pos.row);
+	    distance = std::abs(grid_end_.col - grid_pos.col) + std::abs(grid_end_.row - grid_pos.row);
 
         ////////////////////
-    }else{
+    } else {
         //////////////////// Your code here (Euclidean distance).
 
-	distance = std::sqrt(pow((grid_end_.col - grid_pos.col),2) + pow((grid_end_.row - grid_pos.row),2));
+	    distance = std::sqrt(pow((grid_end_.col - grid_pos.col),2) + pow((grid_end_.row - grid_pos.row),2));
 
         ////////////////////
     }

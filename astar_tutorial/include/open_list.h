@@ -18,8 +18,6 @@ namespace astar_tutorial{
         /* Destructor */
         virtual ~OpenList ();
 
-
-
         /* Push a node in the open list, returns -1 if an issue occured 
          * The argument is a Node with at least the following fields :
          * id, parent_id cost and the heuristic */

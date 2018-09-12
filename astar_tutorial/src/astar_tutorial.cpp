@@ -190,11 +190,7 @@ std::vector<astar_tutorial::RealCoordinates > SmoothPath(std::vector<astar_tutor
     }
     
     
-    //si current smoothed position
-    //pi original position
-    //si - 1 previous smoothed position
-    //si + 1 next smoothed position
-    
+  
     //////////////////////
 
 

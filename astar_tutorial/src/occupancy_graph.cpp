@@ -192,7 +192,7 @@ std::vector<astar_tutorial::Node > astar_tutorial::OccupancyGraph::GetAdjacentNo
         const int kRowMvt[4] = {1, 1, -1, -1};
         const int kColMvt[4] = {-1, -1, 1, 1};
 
-	// For each possible movement
+	      // For each possible movement
         for(int i = 0; i<4; ++i){
             // If node exist in the surrounding place
             if(grid_to_id_.count(std::pair<int, int>(row + kRowMvt[i], col + kColMvt[i])) != 0){
