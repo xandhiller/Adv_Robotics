@@ -2,7 +2,6 @@
 #include <ros/console.h>
 
 
-
 /* Constructor */
 astar_tutorial::ExtendedList::ExtendedList () {
     node_list_ = std::map< int, astar_tutorial::Node >();
@@ -12,33 +11,24 @@ astar_tutorial::ExtendedList::ExtendedList () {
 astar_tutorial::ExtendedList::~ExtendedList () { }
 
 
-
-
-
-
-
 /* Get the path from the end_id node : return a vector of id (int) going from the starting node to the ending node */
 std::vector<int> astar_tutorial::ExtendedList::GetPath (int end_id)
 {
     std::vector<int> output = std::vector<int>();
 
     //////////////////// Your code here
-    
-	int current_id = end_id;
+	  int current_id = end_id;
 
     while(!(node_list_[current_id].cost == 0)) {
 	    output.push_back(current_id);
 	    current_id = node_list_[current_id].parent_id;
-	}
+	  }
 
-	std::reverse(output.begin(),output.end());
+	  std::reverse(output.begin(),output.end());
     ////////////////////
     
-
     return output;
 }
-
-
 
 
 /* Push a node to the Extended list, return -1 if an issue occured */
@@ -56,17 +46,10 @@ int astar_tutorial::ExtendedList::Push (astar_tutorial::Node new_node)
 }
 
 
-
-
-
 /* Return the list size */
 int astar_tutorial::ExtendedList::Size(){
     return node_list_.size();
 }
-
-
-
-
 
 
 /* Return true if the node id is in the list, false otherwise */
@@ -78,10 +61,6 @@ bool astar_tutorial::ExtendedList::Contains (int id)
         return false;
     }
 }
-
-
-
-
 
 
 /* Print the extended list for (debug purpose) */

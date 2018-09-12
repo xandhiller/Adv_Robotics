@@ -50,21 +50,32 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
 
     //////////////////// Your code here
     
-    // Iterator = First_node
+    // Temporary node to iterate through the lists with.
+    astar_tutorial::Node temp;
     
     // Whilst iterator node does not equal goal
+    for (temp = first_node; temp.first != goal_id_; open_list::PullToExpand() = temp) {
+      
+      // Create iterator object for cycling through list elements
+      std::map<int, astar_tutorial::Node>::iterator i;
 
-      // Grab adjacent nodes from iterator -> Place into open_list 
-     
-      // Compute heuristics on all values in open_list
+      // Grab adjacent nodes from temp -> Place into open_list 
+      OccupancyGraph::GetAdjacentNodes(temp.first)
+      
+      // TODO: Compute heuristics on all values in open_list
+      for (i = open_list_.begin(); !open_list_.empty(); i = open_list_.begin()) {
+        extended_list_.push(i->second);
+      }
       
       // Push all nodes in open_list to extended_list
+      for (i = open_list_.begin(); !open_list_.empty(); i = open_list_.begin()) {
+        extended_list_.push(i->second);
+      }
       
-      // Pull to expand the extended_list, assign returned node -> iterator
-      
+      // Pull to expand the extended_list, assign returned node -> temp (done in for-loop)
+    }
 
-
-    // If at goal: Extended_list -> GetPath
+    // TODO: If at goal: Extended_list -> GetPath
 	    
       
      
