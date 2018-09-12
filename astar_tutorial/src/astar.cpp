@@ -63,8 +63,10 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
       OccupancyGraph::GetAdjacentNodes(temp.first)
       
       // TODO: Compute heuristics on all values in open_list
-      for (i = open_list_.begin(); !open_list_.empty(); i = open_list_.begin()) {
-        extended_list_.push(i->second);
+      i = open_list_.end();      
+      int last_current_id = i->first;
+      for (i = open_list_.begin(); i->first == last_current_id ; i++) {
+        i->second.heuristic = astar_tutorial::Astar::ComputerHeuristic(i->first);
       }
       
       // Push all nodes in open_list to extended_list
@@ -72,11 +74,13 @@ std::vector<astar_tutorial::RealCoordinates > astar_tutorial::AStar::FindPath (
         extended_list_.push(i->second);
       }
       
-      // Pull to expand the extended_list, assign returned node -> temp (done in for-loop)
+      // At the end of the for-loop I assign returned node to temp if not at the goal.
     }
 
     // TODO: If at goal: Extended_list -> GetPath
-	    
+    astar_tutorial::ExtendedList::Print();
+
+	  astar_tutorial::ExtendedList::GetPath(goal_id_); 
       
      
 
